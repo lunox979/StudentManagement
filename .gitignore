@@ -1,21 +1,40 @@
-.gradle
-**/build/
-!**/src/**/build/
+# -----------------
+# IntelliJ
+# -----------------
+# .idea フォルダ内の設定ファイル（xmlも含む）をすべて無視
+.idea/
 
-# Ignore Gradle GUI config
-gradle-app.setting
+# -----------------
+# Gradle
+# -----------------
+# Gradleのキャッシュ
+.gradle/
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+# ビルド（コンパイル）結果の成果物
+build/
 
-# Avoid ignore Gradle wrappper properties
-!gradle-wrapper.properties
-
-# Cache of project
+# Gradleタスク名のキャッシュ
 .gradletasknamecache
 
-# Eclipse Gradle plugin generated files
-# Eclipse Core
+# Eclipse（もし使う場合）
 .project
-# JDT-specific (Eclipse Java Development Tools)
 .classpath
+.settings
+
+# -----------------
+# その他
+# -----------------
+# ログファイル
+*.log
+
+# パッケージ化されたファイル
+*.jar
+*.war
+*.ear
+
+# -----------------
+# 例外（無視しない）
+# -----------------
+# Gradleラッパーのjarファイルは管理対象にする
+!gradle/wrapper/gradle-wrapper.jar
+!gradle-wrapper.jar
