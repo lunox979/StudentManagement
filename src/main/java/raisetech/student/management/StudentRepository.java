@@ -4,9 +4,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 
 @Mapper
 public interface StudentRepository {
@@ -18,12 +19,12 @@ public interface StudentRepository {
 
 
   @Insert("INSERT INTO student (name,age) values(#{name}, #{age})")
-  void registerStudent(String name, Integer age);
+  void registerStudent(@Param("name") String name, @Param("age")Integer age);
 
   @Update("UPDATE student SET age = #{age} WHERE name = #{name}")
-  void updateStudent(String name, Integer age);
+  void updateStudent(@Param("name") String name, @Param("age") Integer age);
 
   @Delete("DELETE FROM student WHERE name = #{name}")
-  void deleteStudent(String name);
+  void deleteStudent(@Param("name") String name);
 
 }
