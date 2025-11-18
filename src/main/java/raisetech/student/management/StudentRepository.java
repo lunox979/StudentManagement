@@ -13,7 +13,7 @@ public interface StudentRepository {
 
 
 
-  @Select("SELECT * FROgM student")
+  @Select("SELECT * FROM student")
   List<Student> getStudentList();
 
 
