@@ -17,7 +17,7 @@ public interface StudentRepository {
   List<Student> getStudentList();
 
 
-  @Insert("INSERT student values(#{name}, #{age})")
+  @Insert("INSERT INTO student (name,age) values(#{name}, #{age})")
   void registerStudent(String name, Integer age);
 
   @Update("UPDATE student SET age = #{age} WHERE name = #{name}")
