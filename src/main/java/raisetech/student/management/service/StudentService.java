@@ -22,7 +22,7 @@ public class StudentService {
     //絞り込みをする．年齢が30代のみを抽出する
     //抽出したリストをコントローラに返す
     return repository.search().stream()
-        .filter(student -> student.getAge() == 30)
+        .filter(student -> student.getAge() >= 30 && student.getAge() < 40)
         .collect(Collectors.toList());
 
   }
