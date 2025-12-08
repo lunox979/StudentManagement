@@ -13,9 +13,11 @@ public class Student {
   private String kanaName;
   private String nickname;
   private String email;
-  private String area;
+  private String livingArea;
   private int age;
   private String sex;
+  private String remark;
+  private boolean isDeleted;
 
 
 
