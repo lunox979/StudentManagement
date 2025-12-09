@@ -8,25 +8,29 @@
 <form th:action="@{/registerStudent}" th:object="${studentDetail}" method = "post">
   <div>
     <label for="name">名前:</label>
-    <input type="text" id="name" th:field="*{student.name}" required />
+    <input type="text" id="name" th:field="*{student.name}"  />
+    <span th:errors="*{student.name}" style="color: red;"></span>
   </div>
 
   <div>
     <label for="kanaName">カナ名:</label>
-    <input type="text" id="kanaName" th:field="*{student.kanaName}" required />
+    <input type="text" id="kanaName" th:field="*{student.kanaName}" />
+    <span th:errors="*{student.kanaName}" style="color: red;"></span>
   </div>
 
   <div>
     <label for="nickname">ニックネーム:</label>
-    <input type="text" id="nickname" th:field="*{student.nickname}" required />
+    <input type="text" id="nickname" th:field="*{student.nickname}"  />
   </div>
   <div>
     <label for="email">メールアドレス:</label>
-    <input type="text" id="email" th:field="*{student.email}" required />
+    <input type="text" id="email" th:field="*{student.email}"  />
+    <span th:errors="*{student.email}" style="color: red;"></span>
   </div>
   <div>
     <label for="livingArea">地域:</label>
-    <input type="text" id="livingArea" th:field="*{student.livingArea}" required />
+    <input type="text" id="livingArea" th:field="*{student.livingArea}"  />
+    <span th:errors="*{student.livingArea}" style="color: red;"></span>
   </div>
   <div>
     <label for="age">年齢:</label>
@@ -35,7 +39,8 @@
 
   <div>
     <label for="sex">性別:</label>
-    <input type="text" id="sex" th:field="*{student.sex}" required />
+    <input type="text" id="sex" th:field="*{student.sex}"  />
+    <span th:errors="*{student.sex}" style="color: red;"></span>
   </div>
   <div>
     <label for="remark">備考:</label>
@@ -45,28 +50,27 @@
   <div>
     <span>コース登録:</span>
       <label>
-        <input type="radio" value="Javaコース" th:field="*{registerStudentCourse.courseName}" required />
+        <input type="radio" value="Javaコース" th:field="*{registerStudentCourse.courseName}"  />
         Javaコース
       </label>
 
       <label>
-        <input type="radio" value="React応用講座" th:field="*{registerStudentCourse.courseName}" required />
+        <input type="radio" value="React応用講座" th:field="*{registerStudentCourse.courseName}"  />
         React応用講座
       </label>
 
       <label>
-      <input type="radio" value="Webプログラミング基礎" th:field="*{registerStudentCourse.courseName}" required />
+      <input type="radio" value="Webプログラミング基礎" th:field="*{registerStudentCourse.courseName}"  />
         Webプログラミング基礎
       </label>
 
       <label>
-      <input type="radio" value="UI/UXデザインコース" th:field="*{registerStudentCourse.courseName}" required />
+      <input type="radio" value="UI/UXデザインコース" th:field="*{registerStudentCourse.courseName}"  />
       UI/UXデザインコース
       </label>
 
 
-
-
+    <span th:errors="*{registerStudentCourse.courseName}" style="color: red;"></span>
   </div>
   <div>
     <button type="submit">登録</button>
