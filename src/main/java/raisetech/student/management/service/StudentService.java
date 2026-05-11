@@ -1,6 +1,7 @@
 package raisetech.student.management.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,37 +17,78 @@ public class StudentService {
 
   private StudentRepository repository;
 
-  @Autowired
+  @Autowired //SpringBootから引っ張ってくることを表す
   public StudentService(StudentRepository repository) {
     this.repository = repository;
   }
 
-  public List<Student> searchStudentList(){
+  public List<Student> searchStudentList() {
     //絞り込みをする．年齢が30代のみを抽出する
     //抽出したリストをコントローラに返す
-    return repository.search();
+    List<Student> studentLists= repository.search();
+    //List<Student> matchStudentList = studentLists.stream()
+       // .filter(studentList -> studentList.getAge() >= 30 && studentList.getAge() < 40).toList();
+    return List.copyOf(studentLists);
+
 
   }
 
-  public List<StudentsCourses> searchStudentCourseList(){
+  public Student searchStudent(String id){
+    return repository.searchStudent(id);
+
+  }
+
+  public List<StudentsCourses> searchStudentCourseList() {
     //絞り込み検索で「Javaコースの情報のみを抽出する」
     //抽出したリストをコントローラに返す
-    return repository.searchCourses();
+    List<StudentsCourses> studentsCourses= repository.searchCourses();
+
+    return List.copyOf(studentsCourses);
+  }
+
+  public List<StudentsCourses> searchStudentmatchCourseList(String id){
+    List<StudentsCourses> studentsCourses= repository.matchCourses(id);
+    if(studentsCourses.isEmpty()){
+      studentsCourses.add(new StudentsCourses());
+    }
+    return studentsCourses;
+  }
+
+  @Transactional
+  public void updateStudent(StudentDetail studentDetail){
+    System.out.println("student id: " + studentDetail.getStudent().getId());
+    System.out.println("student name: " + studentDetail.getStudent().getName());
+
+    repository.updateRegisterStudent(studentDetail.getStudent());
+
+    for(StudentsCourses studentsCourses : studentDetail.getStudentsCourses()){
+      int count = repository.countStudentCourses(studentsCourses.getStudentId());
+      if( count <=  0){
+        studentsCourses.setStudentId(studentDetail.getStudent().getId());
+        studentsCourses.setCourseStartAt(LocalDateTime.now());
+        repository.registerStudentCourse(studentsCourses);
+      }
+      else{
+        System.out.println("course id: " + studentsCourses.getId());
+        System.out.println("course studentId: " + studentsCourses.getStudentId());
+        System.out.println("course name: " + studentsCourses.getCourseName());
+        studentsCourses.setCourseStartAt(LocalDateTime.now());
+        repository.updateRegisterStudentCourse(studentsCourses);
+      }
+
+    }
   }
 
   @Transactional
   public void registerStudent(StudentDetail studentDetail){
-
-    UUID uuid = UUID.randomUUID();
-    String newId = uuid.toString();
-    studentDetail.getStudent().setId(newId);
-    studentDetail.getRegisterStudentCourse().setStudentId(newId);
-    studentDetail.getRegisterStudentCourse().setCourseStartAt(LocalDateTime.now());
-    studentDetail.getRegisterStudentCourse().setCourseEndAt(LocalDateTime.now().plusYears(1));
-
-    repository.registerStudent(studentDetail);
-    // TODO: コース登録情報も行う
-    repository.registerStudentCourse(studentDetail);
+    UUID uuid  = UUID.randomUUID();
+    studentDetail.getStudent().setId(uuid.toString());
+    studentDetail.getRegisterStudentCourse().setStudentId(uuid.toString());
+    repository.registerStudent(studentDetail.getStudent());
+    repository.registerStudentCourse(studentDetail.getRegisterStudentCourse());
   }
+
+
+
 }
 

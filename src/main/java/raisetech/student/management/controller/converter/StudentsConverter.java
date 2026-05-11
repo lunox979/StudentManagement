@@ -8,8 +8,9 @@ import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
 import raisetech.student.management.domain.StudentDetail;
 
+
 @Component
-public class StudentConverter {
+public class StudentsConverter {
   public List<StudentDetail> convertStudentDetails(List<Student> students,
       List<StudentsCourses> studentCourses) {
     List<StudentDetail> studentDetails = new ArrayList<>();
@@ -22,9 +23,15 @@ public class StudentConverter {
           .collect(Collectors.toList());
 
 
-      studentDetail.setStudentCourses(convertStudentCourses);
+      studentDetail.setStudentsCourses(convertStudentCourses);
       studentDetails.add(studentDetail);
     });
+
     return studentDetails;
   }
+
+
+
+
+
 }

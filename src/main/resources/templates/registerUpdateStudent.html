@@ -2,16 +2,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>受講生登録</title>
+  <title>受講生更新</title>
 </head>
 <body>
-<h1> 受講生登録</h1>
-<form th:action="@{/registerStudent}" th:object="${studentDetail}" method = "post">
+<h1> 受講生更新</h1>
+<form th:action="@{/updateStudent}" th:object="${studentDetail}" method = "post">
+
   <div>
     <label for="name">名前:</label>
     <input type="text" id="name" th:field="*{student.name}"  required/>
     <div th:if="${#fields.hasErrors('student.name')}" th:errors="*{student.name}">エラーメッセージ</div>
-<!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
   </div>
 
   <div>
@@ -67,18 +69,36 @@
     <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
   </div>
 
-  <label th:for="courseList">受講コースを選択してください</label>
-  <div th:each="course, stat : ${courseList}">
+  <input type="hidden" th:field="*{student.id}"/>
+  <div th:each="course, stat : *{studentsCourses}">
 
-      <input type="radio"
-             th:id="courseList__${stat.index}__" th:field="*{registerStudentCourse.courseName}"
-             th:value="${course}">
-      <label th:for="'courseList' + ${stat.index}" th:text = "${course}"> コース名が入る場所</label>
+    <input type="hidden" th:field="*{studentsCourses[__${stat.index}__].studentId}"/>
+
+    <input type="hidden"
+           th:id="'courseId' + ${stat.index}"
+           th:field="*{studentsCourses[__${stat.index}__].id}"
+            required/>
+
+    <label th:for="'course' + ${stat.index}" th:text="受講登録コース">コース名</label>
+    <input type="text"
+         th:id="'course' + ${stat.index}"
+         th:field="*{studentsCourses[__${stat.index}__].courseName}"
+          required/>
+
   </div>
 
 
+<!--    <input type="radio"-->
+<!--           th:id="courseList__${stat.index}__" th:field="*{studentsCourses.courseName}"-->
+<!--           th:value="${course}">-->
+<!--    <label th:for="'courseList' + ${stat.index}" th:text = "${course}"> コース名が入る場所</label>-->
+<!--  </div>-->
+
+
+
+
   <div>
-    <button type="submit">登録</button>
+    <button type="submit">更新</button>
   </div>
 </form>
 </body>

@@ -11,10 +11,10 @@ import raisetech.student.management.data.StudentsCourses;
 @Getter
 @Setter
 public class StudentDetail {
-  @Valid
+  @Valid //子のバリデーションまでチェックする
   private Student student;
-  private List<StudentsCourses> studentCourses;
-  @Valid
+  private List<StudentsCourses> studentsCourses;
+
   private StudentsCourses registerStudentCourse = new StudentsCourses();
 
 
