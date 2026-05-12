@@ -36,7 +36,7 @@ public interface StudentRepository {
   @Select("SELECT * FROM students_courses WHERE student_id = #{id}")
   List<StudentsCourses> matchCourses(String id);
 
-  @Select("SELECT COUNT(*) FROM  students_courses WHERE student_id = #{id}")
+  @Select("SELECT COUNT(*) FROM  students_courses WHERE id = #{id}")
   int countStudentCourses(String id);
   @Select ("SELECT id, student_id, course_name, course_start_at,course_end_at  FROM students_courses")
   List<StudentsCourses> searchCourses();
@@ -60,7 +60,7 @@ public interface StudentRepository {
       + "sex = #{sex},remark = #{remark},is_deleted = #{isDeleted}  WHERE id = #{id}")
   void updateRegisterStudent(Student student);
 
-  @Update ("UPDATE students_courses SET course_name = #{courseName} WHERE student_id = #{studentId}")
+  @Update ("UPDATE students_courses SET course_name = #{courseName} WHERE id = #{id}")
   void updateRegisterStudentCourse(StudentsCourses studentsCourses);
 
 

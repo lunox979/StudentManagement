@@ -24,7 +24,7 @@ public class Student {
   private String email;
   @NotBlank (message = "地域を入力してください")
   private String livingArea;
-  private int age;
+  private Integer age;
   private String sex;
   private String remark;
   private boolean isDeleted;

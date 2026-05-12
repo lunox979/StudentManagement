@@ -92,8 +92,7 @@ public class StudentController {
   @PostMapping("/registerStudent")
   public String registerStudent(@Validated @ModelAttribute StudentDetail studentDetail, BindingResult result){
 
-    System.out.println("POSTメソッドが呼ばれました");
-    System.out.println("エラーあり: " + result.hasErrors());
+
     if(result.hasErrors()){
       return "registerStudent";
     }
@@ -143,13 +142,6 @@ public class StudentController {
 
 
 
-/*
-  @GetMapping("/updateStudent")
-  public String updateStudent(Model model){
 
-    model.addAttribute("studentDetail", studentDetail);
-    return "registerStudent";
-  }
-*/
 
 

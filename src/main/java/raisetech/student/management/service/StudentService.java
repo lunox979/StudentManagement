@@ -47,36 +47,25 @@ public class StudentService {
   }
 
   public List<StudentsCourses> searchStudentmatchCourseList(String id){
-    List<StudentsCourses> studentsCourses= repository.matchCourses(id);
-    if(studentsCourses.isEmpty()){
-      studentsCourses.add(new StudentsCourses());
-    }
-    return studentsCourses;
+    return repository.matchCourses(id);
   }
 
   @Transactional
   public void updateStudent(StudentDetail studentDetail){
-    System.out.println("student id: " + studentDetail.getStudent().getId());
-    System.out.println("student name: " + studentDetail.getStudent().getName());
+
 
     repository.updateRegisterStudent(studentDetail.getStudent());
 
+
     for(StudentsCourses studentsCourses : studentDetail.getStudentsCourses()){
-      int count = repository.countStudentCourses(studentsCourses.getStudentId());
-      if( count <=  0){
-        studentsCourses.setStudentId(studentDetail.getStudent().getId());
-        studentsCourses.setCourseStartAt(LocalDateTime.now());
-        repository.registerStudentCourse(studentsCourses);
-      }
-      else{
-        System.out.println("course id: " + studentsCourses.getId());
-        System.out.println("course studentId: " + studentsCourses.getStudentId());
-        System.out.println("course name: " + studentsCourses.getCourseName());
-        studentsCourses.setCourseStartAt(LocalDateTime.now());
+
         repository.updateRegisterStudentCourse(studentsCourses);
-      }
 
     }
+
+
+
+
   }
 
   @Transactional
