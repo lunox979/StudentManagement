@@ -24,21 +24,4 @@ public class Application {
 
 	}
 
-/*
-  @PostMapping("/student")
-  public void CreateStudent(String name, int age, String kana, String id,String email){
-    repository.createStudent(name, age, kana, email, id);
-  }
-
-  @PatchMapping("/student")
-  public void updateStudent(String name, int age) {
-    repository.updateStudent(name,age);
-  }
-
-  @DeleteMapping("/student")
-  public void deleteStudent(String name){
-    repository.deleteStudent(name);
-  }
-*/
-
 }

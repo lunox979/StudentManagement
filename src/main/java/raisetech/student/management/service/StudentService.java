@@ -56,7 +56,9 @@ public class StudentService {
 
     repository.updateRegisterStudent(studentDetail.getStudent());
 
-
+    if(studentDetail.getStudentsCourses() == null || studentDetail.getStudentsCourses().isEmpty()){
+      return;
+    }
     for(StudentsCourses studentsCourses : studentDetail.getStudentsCourses()){
 
         repository.updateRegisterStudentCourse(studentsCourses);

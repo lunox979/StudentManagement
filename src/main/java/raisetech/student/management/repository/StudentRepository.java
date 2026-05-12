@@ -36,8 +36,7 @@ public interface StudentRepository {
   @Select("SELECT * FROM students_courses WHERE student_id = #{id}")
   List<StudentsCourses> matchCourses(String id);
 
-  @Select("SELECT COUNT(*) FROM  students_courses WHERE id = #{id}")
-  int countStudentCourses(String id);
+
   @Select ("SELECT id, student_id, course_name, course_start_at,course_end_at  FROM students_courses")
   List<StudentsCourses> searchCourses();
 

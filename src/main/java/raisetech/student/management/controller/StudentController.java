@@ -65,8 +65,7 @@ public class StudentController {
 
 
 
-    //List<String> courseList = getCourseList();
-    //model.addAttribute("courseList", courseList);
+
 
     model.addAttribute("studentDetail", studentDetail);
 
@@ -103,7 +102,7 @@ public class StudentController {
     service.registerStudent(studentDetail);
 
 
-    System.out.println(studentDetail.getStudent().getName() + "さんが新規受講生として登録されました．");
+
     return "redirect:/studentList";
   }
 
