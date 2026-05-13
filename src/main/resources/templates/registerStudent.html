@@ -75,7 +75,7 @@
              th:value="${course}" required/>
       <label th:for="'courseList' + ${stat.index}" th:text = "${course}"> コース名が入る場所</label>
   </div>
-
+ <div th:if="${errorMessage}" th:text = "${errorMessage}" style = "color:red;"></div>
 
   <div>
     <button type="submit">登録</button>

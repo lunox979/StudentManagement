@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -89,7 +90,7 @@ public class StudentController {
 
 
   @PostMapping("/registerStudent")
-  public String registerStudent(@Validated @ModelAttribute StudentDetail studentDetail, BindingResult result){
+  public String registerStudent(@Validated @ModelAttribute StudentDetail studentDetail, BindingResult result, Model model){
 
 
     if(result.hasErrors()){
@@ -97,9 +98,16 @@ public class StudentController {
     }
 
 
+    try{
+      service.registerStudent(studentDetail);
+    }
+    catch(RuntimeException e){
+      model.addAttribute("errorMessage", e.getMessage());
+      List<String> courseList = getCourseList();
+      model.addAttribute("courseList", courseList);
+      return "registerStudent";
 
-
-    service.registerStudent(studentDetail);
+    }
 
 
 
@@ -119,8 +127,14 @@ public class StudentController {
 
 
 
+    try{
+      service.updateStudent(studentDetail);
 
-    service.updateStudent(studentDetail);
+    }
+    catch(RuntimeException e){
+      model.addAttribute("errorMessage",e.getMessage());
+      return "registerUpdateStudent";
+    }
 
 
 

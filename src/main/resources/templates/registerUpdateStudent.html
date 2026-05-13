@@ -88,6 +88,8 @@
 
   </div>
 
+  <div th:if="${errorMessage}" th:text = "${errorMessage}" style = "color:red;"></div>
+
 
 <!--    <input type="radio"-->
 <!--           th:id="courseList__${stat.index}__" th:field="*{studentsCourses.courseName}"-->

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.data.Student;
@@ -60,8 +61,16 @@ public class StudentService {
       return;
     }
     for(StudentsCourses studentsCourses : studentDetail.getStudentsCourses()){
+        if(studentsCourses.getId() == null || studentsCourses.getId().isEmpty()){
+          continue;
+        }
 
+      try{
         repository.updateRegisterStudentCourse(studentsCourses);
+      }
+      catch(DuplicateKeyException e){
+        throw new RuntimeException("すでに同じコースが登録されています．");
+      }
 
     }
 
@@ -76,7 +85,15 @@ public class StudentService {
     studentDetail.getStudent().setId(uuid.toString());
     studentDetail.getRegisterStudentCourse().setStudentId(uuid.toString());
     repository.registerStudent(studentDetail.getStudent());
-    repository.registerStudentCourse(studentDetail.getRegisterStudentCourse());
+
+
+    try{
+      repository.registerStudentCourse(studentDetail.getRegisterStudentCourse());
+    }
+    catch(DuplicateKeyException e){
+      throw new RuntimeException("すでに同じコースが登録されています．");
+    }
+
   }
 
 
