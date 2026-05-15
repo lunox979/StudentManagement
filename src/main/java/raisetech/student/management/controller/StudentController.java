@@ -148,8 +148,8 @@ public class StudentController {
   @PostMapping("/softDeleteStudent/{userId}")
   public String softDeleteStudent(@PathVariable("userId") String id){
 
-    boolean isDelted = service.searchStudent(id).isDeleted();
-    service.softDeleteStudent(id,!isDelted);
+    boolean isDeleted = service.searchStudent(id).isDeleted();
+    service.softDeleteStudent(id,!isDeleted);
 
     return "redirect:/studentList";
   }

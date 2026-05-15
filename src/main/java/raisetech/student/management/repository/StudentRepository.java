@@ -63,7 +63,7 @@ public interface StudentRepository {
   void updateRegisterStudentCourse(StudentsCourses studentsCourses);
 
   @Update("UPDATE students SET is_deleted = #{isDeleted} WHERE id = #{id}")
-  void softDeleteStudent(String id,boolean isDeleted);
+  void softDeleteStudent(@Param("id") String id,@Param("isDeleted") boolean isDeleted);
 
 
 
