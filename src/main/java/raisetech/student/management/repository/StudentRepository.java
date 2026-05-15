@@ -27,7 +27,7 @@ public interface StudentRepository {
    * @return 全件検索した受講生情報の一覧
    */
 
-  @Select("SELECT * FROM  students")
+  @Select("SELECT * FROM students")
   List<Student> search();
 
   @Select("SELECT * FROM students WHERE id = #{id}")
@@ -61,6 +61,11 @@ public interface StudentRepository {
 
   @Update ("UPDATE students_courses SET course_name = #{courseName} WHERE id = #{id}")
   void updateRegisterStudentCourse(StudentsCourses studentsCourses);
+
+  @Update("UPDATE students SET is_deleted = #{isDeleted} WHERE id = #{id}")
+  void softDeleteStudent(String id,boolean isDeleted);
+
+
 
 
 
