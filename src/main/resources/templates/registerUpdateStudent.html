@@ -5,8 +5,12 @@
   <title>受講生更新</title>
 </head>
 <body>
+
 <h1> 受講生更新</h1>
 <form th:action="@{/updateStudent}" th:object="${studentDetail}" method = "post">
+
+
+
 
   <div>
     <label for="name">名前:</label>
@@ -88,7 +92,11 @@
 
   </div>
 
-  <div th:if="${errorMessage}" th:text = "${errorMessage}" style = "color:red;"></div>
+  <div>
+    <button type="submit">更新</button>
+  </div>
+
+
 
 
 <!--    <input type="radio"-->
@@ -97,12 +105,7 @@
 <!--    <label th:for="'courseList' + ${stat.index}" th:text = "${course}"> コース名が入る場所</label>-->
 <!--  </div>-->
 
-
-
-
-  <div>
-    <button type="submit">更新</button>
-  </div>
 </form>
+
 </body>
 </html>

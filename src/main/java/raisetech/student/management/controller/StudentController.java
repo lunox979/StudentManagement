@@ -94,6 +94,7 @@ public class StudentController {
 
 
     if(result.hasErrors()){
+
       return "registerStudent";
     }
 
@@ -127,7 +128,7 @@ public class StudentController {
 
 
 
-    try{
+    try {
       service.updateStudent(studentDetail);
 
     }
@@ -139,12 +140,25 @@ public class StudentController {
 
 
 
+
+
+    return "redirect:/studentList";
+  }
+
+  @PostMapping("/softDeleteStudent/{userId}")
+  public String softDeleteStudent(@PathVariable("userId") String id){
+
+    boolean isDeleted = service.searchStudent(id).isDeleted();
+    service.softDeleteStudent(id,!isDeleted);
+
     return "redirect:/studentList";
   }
 
   private static List<String> getCourseList() {
     return List.of("Javaコース","React応用講座","Webプログラミング基礎","UI/UXデザインコース");
   }
+
+
 
 }
 

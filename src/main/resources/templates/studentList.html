@@ -18,6 +18,7 @@
     <th>性別</th>
     <th>登録コース</th>
     <th>備考</th>
+    <th>キャンセル</th>
   </tr>
   </thead>
   <tbody>
@@ -32,6 +33,7 @@
     <td th:text="${studentDetail.student.livingArea}">東京</td>
     <td th:text="${studentDetail.student.age}">20</td>
     <td th:text="${studentDetail.student.sex}">男性</td>
+
     <td>
         <div th:each="studentCourse : ${studentDetail.studentsCourses}"
             th:text="${studentCourse.courseName}">
@@ -39,6 +41,16 @@
         </div>
     </td>
     <td th:text="${studentDetail.student.remark}">特になし</td>
+    <td>
+      <form method="post" th:object="${studentDetail.student}"
+            th:action="@{/softDeleteStudent/{id}(id=*{id})}">
+       <input type="checkbox" th:checked="${studentDetail.student.isDeleted}" onclick="this.form.submit()"/>
+
+      </form>
+
+    </td>
+
+
   </tr>
   </tbody>
 </table>

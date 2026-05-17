@@ -27,8 +27,7 @@ public class StudentService {
     //絞り込みをする．年齢が30代のみを抽出する
     //抽出したリストをコントローラに返す
     List<Student> studentLists= repository.search();
-    //List<Student> matchStudentList = studentLists.stream()
-       // .filter(studentList -> studentList.getAge() >= 30 && studentList.getAge() < 40).toList();
+
     return List.copyOf(studentLists);
 
 
@@ -78,6 +77,21 @@ public class StudentService {
 
 
   }
+
+  @Transactional
+  public void softDeleteStudent(String id, boolean isDeleted){
+
+
+    repository.softDeleteStudent(id,isDeleted);
+
+
+
+
+  }
+
+
+
+
 
   @Transactional
   public void registerStudent(StudentDetail studentDetail){
