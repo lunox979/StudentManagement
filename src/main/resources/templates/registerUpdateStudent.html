@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>受講生更新</title>
+</head>
+<body>
+<h1> 受講生更新</h1>
+<form th:action="@{/updateStudent}" th:object="${studentDetail}" method = "post">
+
+  <div>
+    <label for="name">名前:</label>
+    <input type="text" id="name" th:field="*{student.name}"  required/>
+    <div th:if="${#fields.hasErrors('student.name')}" th:errors="*{student.name}">エラーメッセージ</div>
+
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+  <div>
+    <label for="kanaName">カナ名:</label>
+    <input type="text" id="kanaName" th:field="*{student.kanaName}"  required/>
+    <div th:if="${#fields.hasErrors('student.kanaName')}" th:errors="*{student.kanaName}">エラーメッセージ</div>
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+  <div>
+    <label for="nickname">ニックネーム:</label>
+    <input type="text" id="nickname" th:field="*{student.nickname}"  required/>
+
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+  <div>
+    <label for="email">メールアドレス:</label>
+    <input type="text" id="email" th:field="*{student.email}"  required/>
+    <div th:if="${#fields.hasErrors('student.email')}" th:errors="*{student.email}">エラーメッセージ</div>
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+
+
+
+  <div>
+    <label for="livingArea">住んでいる地域:</label>
+    <input type="text" id="livingArea" th:field="*{student.livingArea}"  required/>
+    <div th:if="${#fields.hasErrors('student.livingArea')}" th:errors="*{student.livingArea}">エラーメッセージ</div>
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+
+
+  <div>
+    <label for="age">年齢:</label>
+    <input type="text" id="age" th:field="*{student.age}"  required/>
+    <div th:if="${#fields.hasErrors('student.age')}" th:errors="*{student.age}">エラーメッセージ</div>
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+  <div>
+    <label for="sex">性別:</label>
+    <input type="text" id="sex" th:field="*{student.sex}"  required/>
+    <div th:if="${#fields.hasErrors('student.sex')}" th:errors="*{student.sex}">エラーメッセージ</div>
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+  <div>
+    <label for="remark">備考欄:</label>
+    <input type="text" id="remark" th:field="*{student.remark}"  />
+    <!--    <span th:errors="*{student.name}" style="color: red;"></span>-->
+  </div>
+
+  <input type="hidden" th:field="*{student.id}"/>
+  <div th:each="course, stat : *{studentsCourses}">
+
+    <input type="hidden" th:field="*{studentsCourses[__${stat.index}__].studentId}"/>
+
+    <input type="hidden"
+           th:id="'courseId' + ${stat.index}"
+           th:field="*{studentsCourses[__${stat.index}__].id}"
+            required/>
+
+    <label th:for="'course' + ${stat.index}" th:text="受講登録コース">コース名</label>
+    <input type="text"
+         th:id="'course' + ${stat.index}"
+         th:field="*{studentsCourses[__${stat.index}__].courseName}"
+          required/>
+
+
+  </div>
+
+  <div th:if="${errorMessage}" th:text = "${errorMessage}" style = "color:red;"></div>
+
+
+<!--    <input type="radio"-->
+<!--           th:id="courseList__${stat.index}__" th:field="*{studentsCourses.courseName}"-->
+<!--           th:value="${course}">-->
+<!--    <label th:for="'courseList' + ${stat.index}" th:text = "${course}"> コース名が入る場所</label>-->
+<!--  </div>-->
+
+
+
+
+  <div>
+    <button type="submit">更新</button>
+  </div>
+</form>
+</body>
+</html>
