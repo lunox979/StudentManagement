@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 //import raisetech.student.management.controller.converter.StudentConverter;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import raisetech.student.management.controller.converter.StudentsConverter;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentsCourses;
@@ -25,7 +28,7 @@ import raisetech.student.management.service.StudentService;
 //import raisetech.student.management.service.StudentService;
 
 
-@Controller
+@RestController
 public class StudentController {
   private StudentService service;
   private StudentsConverter converter;
@@ -39,38 +42,19 @@ public class StudentController {
 
 
   @GetMapping("/studentList")
-  public String getStudentList(Model model) {
+  public List<StudentDetail> getStudentList() {
     //リクエスト加工処理 入力チェックとか入ったりする
     List<Student> students = service.searchStudentList();
     List<StudentsCourses> studentsCourses = service.searchStudentCourseList();
-
-    model.addAttribute("studentList", converter.convertStudentDetails(students, studentsCourses));
-    return "studentList";
+    return converter.convertStudentDetails(students, studentsCourses);
 
   }
 
 
   @GetMapping("/student/{userId}")
-  public String getStudent(@PathVariable("userId") String userId, Model model){
+  public StudentDetail getStudent(@PathVariable String userId){
+    return service.searchStudentDetail(userId);
 
-
-    Student students = service.searchStudent(userId);
-    List<StudentsCourses> studentCourses = service.searchStudentmatchCourseList(userId);
-
-    StudentDetail studentDetail = new StudentDetail();
-    studentDetail.setStudent(students);
-    studentDetail.setStudentsCourses(studentCourses);
-
-
-
-
-
-
-
-
-    model.addAttribute("studentDetail", studentDetail);
-
-    return "registerUpdateStudent";
   }
 
 
@@ -116,33 +100,10 @@ public class StudentController {
   }
 
   @PostMapping("/updateStudent")
-  public String updateStudent(@Validated @ModelAttribute StudentDetail studentDetail, BindingResult result,  Model model){
+  public ResponseEntity<String> updateStudent(@RequestBody @Validated  StudentDetail studentDetail){
 
-    if(result.hasErrors()){
-
-
-
-      return "registerUpdateStudent";
-
-    }
-
-
-
-    try {
       service.updateStudent(studentDetail);
-
-    }
-    catch(RuntimeException e){
-      model.addAttribute("errorMessage",e.getMessage());
-      return "registerUpdateStudent";
-    }
-
-
-
-
-
-
-    return "redirect:/studentList";
+      return ResponseEntity.ok("更新処理が成功しました．");
   }
 
   @PostMapping("/softDeleteStudent/{userId}")

@@ -38,6 +38,15 @@ public class StudentService {
 
   }
 
+  public StudentDetail searchStudentDetail(String id){
+    Student student = repository.searchStudent(id);
+    List<StudentsCourses> studentCourses = repository.matchCourses(id);
+    StudentDetail studentDetail = new StudentDetail();
+    studentDetail.setStudentsCourses(studentCourses);
+    studentDetail.setStudent(student);
+    return studentDetail;
+  }
+
   public List<StudentsCourses> searchStudentCourseList() {
     //絞り込み検索で「Javaコースの情報のみを抽出する」
     //抽出したリストをコントローラに返す
@@ -56,25 +65,11 @@ public class StudentService {
 
     repository.updateRegisterStudent(studentDetail.getStudent());
 
-    if(studentDetail.getStudentsCourses() == null || studentDetail.getStudentsCourses().isEmpty()){
-      return;
-    }
     for(StudentsCourses studentsCourses : studentDetail.getStudentsCourses()){
-        if(studentsCourses.getId() == null || studentsCourses.getId().isEmpty()){
-          continue;
-        }
 
-      try{
         repository.updateRegisterStudentCourse(studentsCourses);
-      }
-      catch(DuplicateKeyException e){
-        throw new RuntimeException("すでに同じコースが登録されています．");
-      }
 
     }
-
-
-
 
   }
 
