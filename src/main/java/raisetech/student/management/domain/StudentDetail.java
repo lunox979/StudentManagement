@@ -1,7 +1,7 @@
 package raisetech.student.management.domain;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

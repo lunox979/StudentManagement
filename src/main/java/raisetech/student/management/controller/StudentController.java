@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
 
-import org.hibernate.validator.constraints.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -65,8 +65,8 @@ public class StudentController {
    */
 
   @GetMapping("/student/{userId}")
-  public StudentDetail getStudent(@PathVariable @Pattern(regexp = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
-      message="idの形式が正しくありません．") String userId){
+  public StudentDetail getStudent(@PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+      + "[0-9a-fA-F]{12}", message="idの形式が正しくありません．") String userId){
 
     return service.searchStudentDetail(userId);
 
@@ -105,12 +105,19 @@ public class StudentController {
    * @return 全受講生の詳細情報
    */
   @PostMapping("/softDeleteStudent/{userId}")
-  public String softDeleteStudent(@PathVariable("userId") @UUID(message = "idの形式が正しくありません．") String id){
+  public ResponseEntity<String> softDeleteStudent(@PathVariable("userId")
+      @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+          message="idの形式が正しくありません．") String id){
 
     boolean isDeleted = service.searchStudent(id).isDeleted();
     service.softDeleteStudent(id,!isDeleted);
 
-    return "redirect:/studentList";
+    if(isDeleted){
+      return ResponseEntity.ok("論理削除を解除しました");
+    }
+    else{
+      return ResponseEntity.ok("論理削除が完了しました");
+    }
   }
 
 
