@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StudentsCourses {
+public class StudentCourse {
     private String id;
     private String studentId;
     @NotBlank(message = "登録するコースを選択してください")

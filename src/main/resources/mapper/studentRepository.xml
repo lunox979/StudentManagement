@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="raisetech.student.management.repository.StudentRepository">
+  <!-- 受講生の全件検索 -->
+  <select id="search" resultType="raisetech.student.management.data.Student">
+    SELECT * FROM students WHERE is_deleted = false
+  </select>
+
+  <!-- 受講生の単一検索 -->
+  <select id="searchStudent" resultType="raisetech.student.management.data.Student">
+    SELECT * FROM students WHERE id = #{id}
+  </select>
+
+  <select id="matchStudentCourses" resultType="raisetech.student.management.data.StudentCourse">
+    SELECT * FROM students_courses WHERE student_id = #{id}
+  </select>
+
+  <select id="searchStudentCourseList" resultType="raisetech.student.management.data.StudentCourse">
+    SELECT id, student_id, course_name, course_start_at,course_end_at  FROM students_courses
+  </select>
+
+  <insert id="registerStudent">
+    INSERT INTO students
+    (
+      id,
+      name,
+      kana_name,
+      nickname,
+      email,
+      living_area,
+      age,
+      sex,
+      remark,
+      is_deleted
+    )
+    VALUES
+    (
+      #{id},
+      #{name},
+      #{kanaName},
+      #{nickname},
+      #{email},
+      #{livingArea},
+      #{age},
+      #{sex},
+      #{remark},
+      false
+    )
+  </insert>
+
+
+
+  <insert id="registerStudentCourse">
+    INSERT INTO students_courses (
+      course_name,
+      student_id,
+      course_start_at
+    )
+    VALUES
+    (
+      #{courseName},
+      #{studentId},
+      #{courseStartAt}
+    )
+  </insert>
+
+ <update id="updateRegisterStudent">
+   UPDATE students SET
+    name = #{name},
+    kana_name = #{kanaName},
+    nickname = #{nickname},
+    email = #{email},
+    living_area = #{livingArea},
+    age = #{age},
+    sex = #{sex},
+    remark = #{remark},
+    is_deleted = #{isDeleted}
+   WHERE id = #{id}
+ </update>
+
+  <update id="updateRegisterStudentCourse">
+    UPDATE students_courses SET 
+      course_name = #{courseName} 
+    WHERE id = #{id}
+  </update>
+
+  <update id="softDeleteStudent">
+    UPDATE students SET
+      is_deleted = #{isDeleted}
+    WHERE id = #{id}
+  </update>
+
+
+  
+
+    
+
+</mapper>
