@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import raisetech.student.management.data.Student;
 import raisetech.student.management.domain.StudentDetail;
 import raisetech.student.management.service.StudentService;
 
@@ -104,11 +106,15 @@ public class StudentController {
    * @param id 受講生ID
    * @return 全受講生の詳細情報
    */
-  @PostMapping("/softDeleteStudent/{userId}")
+  @PatchMapping ("/softDeleteStudent/{userId}")
   public ResponseEntity<String> softDeleteStudent(@PathVariable("userId")
       @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
           message="idの形式が正しくありません．") String id){
 
+    Student student = service.searchStudent(id);
+    if(student == null){
+      return ResponseEntity.notFound().build();
+    }
     boolean isDeleted = service.searchStudent(id).isDeleted();
     service.softDeleteStudent(id,!isDeleted);
 

@@ -137,6 +137,9 @@ public class StudentService {
    * @param uuid　受講生コース情報に紐づく受講生のID
    */
   private  void initStudentsCourse(StudentDetail studentDetail, UUID uuid) {
+    if(studentDetail.getRegisterStudentCourse() == null){
+      studentDetail.setRegisterStudentCourse(new StudentCourse());
+    }
     studentDetail.getRegisterStudentCourse().setStudentId(uuid.toString());
     studentDetail.getRegisterStudentCourse().setCourseStartAt(LocalDateTime.now());
   }
