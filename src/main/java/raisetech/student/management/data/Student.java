@@ -16,7 +16,7 @@ import lombok.Setter;
 
 public class Student {
 
-  @NotNull
+
   private String id;
   @NotBlank(message = "名前を入力してください")
   private String name;

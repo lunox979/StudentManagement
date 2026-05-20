@@ -115,7 +115,7 @@ public class StudentController {
     if(student == null){
       return ResponseEntity.notFound().build();
     }
-    boolean isDeleted = service.searchStudent(id).isDeleted();
+    boolean isDeleted = student.isDeleted();
     service.softDeleteStudent(id,!isDeleted);
 
     if(isDeleted){
