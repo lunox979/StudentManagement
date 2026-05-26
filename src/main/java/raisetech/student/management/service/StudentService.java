@@ -120,6 +120,7 @@ public class StudentService {
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail){
     UUID uuid  = UUID.randomUUID();
+
     Student student = studentDetail.getStudent();
 
     student.setId(uuid.toString());

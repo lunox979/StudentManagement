@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.domain.StudentDetail;
+import raisetech.student.management.exception.CustomException;
 import raisetech.student.management.service.StudentService;
 
 
@@ -51,9 +52,10 @@ public class StudentController {
 
 
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentDetailList() {
+  public List<StudentDetail> getStudentDetailList(){
     //リクエスト加工処理 入力チェックとか入ったりする
     return service.searchStudentDetailList();
+
 
 
 
@@ -67,10 +69,15 @@ public class StudentController {
    */
 
   @GetMapping("/student/{userId}")
-  public StudentDetail getStudent(@PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+  public ResponseEntity<StudentDetail> getStudent(@PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
       + "[0-9a-fA-F]{12}", message="idの形式が正しくありません．") String userId){
 
-    return service.searchStudentDetail(userId);
+    StudentDetail studentDetail = service.searchStudentDetail(userId);
+    if(studentDetail == null || studentDetail.getStudent() == null){
+      throw new CustomException("該当するIDが存在しません");
+    }
+    return ResponseEntity.ok(studentDetail);
+
 
   }
 
@@ -82,9 +89,10 @@ public class StudentController {
    */
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Validated StudentDetail studentDetail){
+    StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
 
-  StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
-  return ResponseEntity.ok(responseStudentDetail);
+
+    return ResponseEntity.ok(responseStudentDetail);
 
   }
 
@@ -113,7 +121,7 @@ public class StudentController {
 
     Student student = service.searchStudent(id);
     if(student == null){
-      return ResponseEntity.notFound().build();
+      throw new CustomException("該当するIDが存在しません．");
     }
     boolean isDeleted = student.isDeleted();
     service.softDeleteStudent(id,!isDeleted);
@@ -125,8 +133,6 @@ public class StudentController {
       return ResponseEntity.ok("論理削除が完了しました");
     }
   }
-
-
 
 
 
