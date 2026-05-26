@@ -1,17 +1,21 @@
 package raisetech.student.management.data;
 
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 import lombok.Setter;
 
 @Getter
 @Setter// get setを自動で生成してくれる
+
+
 public class Student {
+
 
   private String id;
   @NotBlank(message = "名前を入力してください")

@@ -1,123 +1,134 @@
 package raisetech.student.management.controller;
 
 
-import java.util.ArrayList;
+import jakarta.validation.constraints.Pattern;
+
 import java.util.List;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-//import raisetech.student.management.controller.converter.StudentConverter;
+
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import raisetech.student.management.controller.converter.StudentsConverter;
 import raisetech.student.management.data.Student;
-import raisetech.student.management.data.StudentsCourses;
 import raisetech.student.management.domain.StudentDetail;
 import raisetech.student.management.service.StudentService;
-//import raisetech.student.management.service.StudentService;
 
 
+/**
+ * 受講生の検索や登録、更新などを行うREST APIとして実行されるControllerです．
+ */
+@Validated
 @RestController
 public class StudentController {
-  private StudentService service;
-  private StudentsConverter converter;
 
+  private StudentService service;
+
+
+  /**
+   * コンストラクタ
+   * @param service 受講生サービス
+   */
   @Autowired
-  public StudentController(StudentService service, StudentsConverter converter) {
+  public StudentController(StudentService service) {
     this.service = service;
-    this.converter = converter;
   }
+
+  /**
+   * 受講生詳細の一覧検索
+   * 全件検索を行うので、条件指定は行わない．
+   * @return 受講生詳細一覧(全件)
+   */
 
 
 
   @GetMapping("/studentList")
-  public List<StudentDetail> getStudentList() {
+  public List<StudentDetail> getStudentDetailList() {
     //リクエスト加工処理 入力チェックとか入ったりする
-    List<Student> students = service.searchStudentList();
-    List<StudentsCourses> studentsCourses = service.searchStudentCourseList();
-    return converter.convertStudentDetails(students, studentsCourses);
+    return service.searchStudentDetailList();
+
+
 
   }
 
+  /**
+   * 受講生詳細の一覧検索
+   * IDにひもづく任意の受講生の情報を取得する
+   * @param userId 受講生ID
+   * @return 受講生
+   */
 
   @GetMapping("/student/{userId}")
-  public StudentDetail getStudent(@PathVariable String userId){
+  public StudentDetail getStudent(@PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+      + "[0-9a-fA-F]{12}", message="idの形式が正しくありません．") String userId){
+
     return service.searchStudentDetail(userId);
 
   }
 
 
-
-
-
-
-
-  @GetMapping("/newStudent")
-  public String newStudent(Model model){
-    model.addAttribute("studentDetail", new StudentDetail());
-    List<String> courseList = getCourseList();
-    model.addAttribute("courseList", courseList);
-    return "registerStudent";
-  }
-
-
-
+  /**
+   * 受講生詳細の登録を行います．
+   * @param studentDetail 受講生詳細
+   * @return 実行結果
+   */
   @PostMapping("/registerStudent")
-  public String registerStudent(@Validated @ModelAttribute StudentDetail studentDetail, BindingResult result, Model model){
+  public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Validated StudentDetail studentDetail){
 
+  StudentDetail responseStudentDetail = service.registerStudent(studentDetail);
+  return ResponseEntity.ok(responseStudentDetail);
 
-    if(result.hasErrors()){
-
-      return "registerStudent";
-    }
-
-
-    try{
-      service.registerStudent(studentDetail);
-    }
-    catch(RuntimeException e){
-      model.addAttribute("errorMessage", e.getMessage());
-      List<String> courseList = getCourseList();
-      model.addAttribute("courseList", courseList);
-      return "registerStudent";
-
-    }
-
-
-
-    return "redirect:/studentList";
   }
 
-  @PostMapping("/updateStudent")
+  /**
+   * 受講生詳細の更新を行います．
+   * @param studentDetail 受講生詳細
+   * @return 実行結果
+   */
+  @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody @Validated  StudentDetail studentDetail){
 
       service.updateStudent(studentDetail);
       return ResponseEntity.ok("更新処理が成功しました．");
   }
 
-  @PostMapping("/softDeleteStudent/{userId}")
-  public String softDeleteStudent(@PathVariable("userId") String id){
 
-    boolean isDeleted = service.searchStudent(id).isDeleted();
+  /**
+   *
+   * @param id 受講生ID
+   * @return 全受講生の詳細情報
+   */
+  @PatchMapping ("/softDeleteStudent/{userId}")
+  public ResponseEntity<String> softDeleteStudent(@PathVariable("userId")
+      @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+          message="idの形式が正しくありません．") String id){
+
+    Student student = service.searchStudent(id);
+    if(student == null){
+      return ResponseEntity.notFound().build();
+    }
+    boolean isDeleted = student.isDeleted();
     service.softDeleteStudent(id,!isDeleted);
 
-    return "redirect:/studentList";
+    if(isDeleted){
+      return ResponseEntity.ok("論理削除を解除しました");
+    }
+    else{
+      return ResponseEntity.ok("論理削除が完了しました");
+    }
   }
 
-  private static List<String> getCourseList() {
-    return List.of("Javaコース","React応用講座","Webプログラミング基礎","UI/UXデザインコース");
-  }
+
+
+
 
 
 
