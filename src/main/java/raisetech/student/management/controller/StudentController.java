@@ -71,7 +71,6 @@ public class StudentController {
   @GetMapping("/student/{userId}")
   public ResponseEntity<StudentDetail> getStudent(@PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
       + "[0-9a-fA-F]{12}", message="idの形式が正しくありません．") String userId){
-
     StudentDetail studentDetail = service.searchStudentDetail(userId);
     if(studentDetail == null || studentDetail.getStudent() == null){
       throw new CustomException("該当するIDが存在しません");
