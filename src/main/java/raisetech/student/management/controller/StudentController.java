@@ -104,6 +104,7 @@ public class StudentController {
   public ResponseEntity<String> updateStudent(@RequestBody @Validated  StudentDetail studentDetail){
 
       service.updateStudent(studentDetail);
+
       return ResponseEntity.ok("更新処理が成功しました．");
   }
 
