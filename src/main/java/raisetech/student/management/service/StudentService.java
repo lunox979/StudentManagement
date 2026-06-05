@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.controller.converter.StudentsConverter;
@@ -120,6 +120,7 @@ public class StudentService {
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail){
     UUID uuid  = UUID.randomUUID();
+
     Student student = studentDetail.getStudent();
 
     student.setId(uuid.toString());
