@@ -74,8 +74,7 @@
     living_area = #{livingArea},
     age = #{age},
     sex = #{sex},
-    remark = #{remark},
-    is_deleted = #{isDeleted}
+    remark = #{remark}
    WHERE id = #{id}
  </update>
 

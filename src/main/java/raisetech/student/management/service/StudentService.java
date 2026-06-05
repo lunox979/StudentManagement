@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.controller.converter.StudentsConverter;
+import raisetech.student.management.controller.mapper.StudentMapper;
+import raisetech.student.management.controller.request.RegisterStudentRequest;
+import raisetech.student.management.controller.request.UpdateStudentRequest;
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
@@ -119,17 +122,18 @@ public class StudentService {
    */
   @Transactional
   public StudentDetail registerStudent(StudentDetail studentDetail){
+
     UUID uuid  = UUID.randomUUID();
-
-    Student student = studentDetail.getStudent();
-
-    student.setId(uuid.toString());
+    studentDetail.getStudent().setId(uuid.toString());
     initStudentsCourse(studentDetail, uuid);
-    repository.registerStudent(student);
-
+    repository.registerStudent(studentDetail.getStudent());
     repository.registerStudentCourse(studentDetail.getRegisterStudentCourse());
+    Student student = repository.searchStudent(uuid.toString());
 
-    return studentDetail;
+    List<StudentCourse> studentCourse = repository.matchStudentCourses(uuid.toString());
+
+    return new StudentDetail(student, studentCourse, new StudentCourse());
+
   }
 
   /**
