@@ -22,7 +22,7 @@ import raisetech.student.management.exception.ValidationErrorResponse.Validation
 public class CustomExceptionHandler {
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ValidationErrorResponse> handleCustomException(CustomException ex){
-    HttpStatus status = HttpStatus.NOT_FOUND;
+    HttpStatus status = ex.getStatus();
     ValidationErrorResponse validationErrorResponse = getValidationErrorResponse(
         ex.getMessage(), status);
     return ResponseEntity.status(status.value()).body(validationErrorResponse);

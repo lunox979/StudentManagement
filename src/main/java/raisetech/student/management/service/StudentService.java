@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import raisetech.student.management.controller.converter.StudentsConverter;
-import raisetech.student.management.controller.mapper.StudentMapper;
-import raisetech.student.management.controller.request.RegisterStudentRequest;
-import raisetech.student.management.controller.request.UpdateStudentRequest;
+
 import raisetech.student.management.data.Student;
 import raisetech.student.management.data.StudentCourse;
 import raisetech.student.management.domain.StudentDetail;
@@ -49,6 +47,15 @@ public class StudentService {
 
   }
 
+  /**
+   *
+   * @param id 受講生ID
+   * @return 受講生情報
+   */
+  public Student searchStudentIncludeDeleted(String id){
+
+    return repository.searchStudentIncludeDeleted(id);
+  }
 
   public Student searchStudent(String id){
 
@@ -65,9 +72,7 @@ public class StudentService {
    */
   public StudentDetail searchStudentDetail(String id){
     Student student = repository.searchStudent(id);
-
     List<StudentCourse> studentCourse = repository.matchStudentCourses(id);
-
     return new StudentDetail(student, studentCourse, new StudentCourse());
   }
 
@@ -149,6 +154,14 @@ public class StudentService {
     studentDetail.getRegisterStudentCourse().setCourseStartAt(LocalDateTime.now());
   }
 
+  /**
+   * 削除された受講生情報の復元を行います。
+   * @param id 受講生Id
+   * @param isDeleted 受講生削除フラグ
+   */
+  public void restoreStudent(String id, boolean isDeleted){
+    repository.restoreStudent(id,isDeleted);
+  }
 
 }
 

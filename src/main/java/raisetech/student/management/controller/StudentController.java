@@ -9,6 +9,7 @@ import java.util.List;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 import raisetech.student.management.annotation.ApiDeleteSuccess200;
 import raisetech.student.management.annotation.ApiError400;
 import raisetech.student.management.annotation.ApiError404;
-import raisetech.student.management.annotation.ApiError409;
+import raisetech.student.management.annotation.ApiError409AlreadyActive;
+import raisetech.student.management.annotation.ApiError409AlreadyDeleted;
+import raisetech.student.management.annotation.ApiError409DuplicateEmail;
+import raisetech.student.management.annotation.ApiRestoreSuccess200;
 import raisetech.student.management.annotation.ApiUpdateSuccess200;
 import raisetech.student.management.annotation.ApiSuccessStudentDetail200;
 import raisetech.student.management.annotation.ApiSuccessStudentDetailList200;
@@ -77,24 +81,22 @@ public class StudentController {
 
   /**
    * 受講生詳細の一覧検索
-   * IDにひもづく任意の受講生の情報を取得する
-   * @param Id 受講生ID
+   * IDにひもづく任意の削除済みでない受講生の情報を取得する
+   * @param id 受講生ID
    * @return 受講生
    */
   @Operation(summary = "単一検索",description ="受講生の単一検索を行います。")
-  @ApiSuccessStudentDetailList200
+  @ApiSuccessStudentDetail200
   @ApiError404
-  @ApiError409
   @ApiError400
-  @GetMapping("/student/{Id}")
+  @GetMapping("/student/{id}")
   public ResponseEntity<StudentDetail> getStudent(@PathVariable @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
-      + "[0-9a-fA-F]{12}", message="idの形式が正しくありません。") String Id){
-    StudentDetail studentDetail = service.searchStudentDetail(Id);
+      + "[0-9a-fA-F]{12}", message="idの形式が正しくありません。") String id){
+    StudentDetail studentDetail = service.searchStudentDetail(id);
     if(studentDetail == null || studentDetail.getStudent() == null){
-      throw new CustomException("該当するIDが存在しません");
+      throw new CustomException("該当するIDが存在しません。", HttpStatus.NOT_FOUND);
     }
     return ResponseEntity.ok(studentDetail);
-
 
   }
 
@@ -107,7 +109,7 @@ public class StudentController {
   @Operation(summary = "受講生登録",description = "受講生を登録します。")
   @ApiSuccessStudentDetail200
   @ApiError400
-  @ApiError409
+  @ApiError409DuplicateEmail
 
   @PostMapping("/registerStudent")
   public ResponseEntity<StudentDetail> registerStudent(@RequestBody @Validated RegisterStudentRequest registerStudentRequest){
@@ -137,11 +139,20 @@ public class StudentController {
    */
   @Operation(summary = "受講生更新", description = "受講生情報の更新を行います。")
   @ApiError404
-  @ApiError409
+  @ApiError409DuplicateEmail
   @ApiError400
   @ApiUpdateSuccess200
   @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody @Validated UpdateStudentRequest updateStudentRequest){
+
+    Student student = service.searchStudent(updateStudentRequest.getId());
+    if(student == null){
+      throw new CustomException("該当するIDが存在しません。", HttpStatus.NOT_FOUND);
+    }
+    if(student.isDeleted()){
+      throw new CustomException("既に削除済みの受講生情報のため、更新できません。", HttpStatus.CONFLICT);
+    }
+
     StudentDetail studentDetail = toUpdateStudentDetail(updateStudentRequest);
     service.updateStudent(studentDetail);
     return ResponseEntity.ok("更新処理が成功しました。");
@@ -150,6 +161,7 @@ public class StudentController {
   private StudentDetail toUpdateStudentDetail(UpdateStudentRequest updateStudentRequest) {
     Student student = new Student();
     student = studentMapper.toUpdateInformation(updateStudentRequest);
+
     StudentDetail studentDetail = new StudentDetail();
     studentDetail.setStudent(student);
     StudentCourse studentCourse = new StudentCourse();
@@ -166,32 +178,48 @@ public class StudentController {
    */
 
   @Operation(summary = "受講生の論理削除",description = "受講生の情報の論理削除を行います。")
-
-
-
   @ApiError400
   @ApiDeleteSuccess200
   @ApiError404
-  @PatchMapping ("/softDeleteStudent/{userId}")
-  public ResponseEntity<String> softDeleteStudent(@PathVariable("userId")
+  @ApiError409AlreadyDeleted
+  @PatchMapping ("/softDeleteStudent/{id}")
+  public ResponseEntity<String> softDeleteStudent(@PathVariable("id")
       @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
-          message="idの形式が正しくありません．") String id){
+          message="idの形式が正しくありません。") String id){
 
-    Student student = service.searchStudent(id);
+    Student student = service.searchStudentIncludeDeleted(id);
     if(student == null){
-      throw new CustomException("該当するIDが存在しません。");
+      throw new CustomException("該当するIDが見つかりません。",HttpStatus.NOT_FOUND);
     }
-    boolean isDeleted = student.isDeleted();
-    service.softDeleteStudent(id,!isDeleted);
+    if(student.isDeleted()){
+      throw new CustomException("既に削除済みの受講生ため、削除処理ができません。",HttpStatus.CONFLICT);
+    }
+    service.softDeleteStudent(id,true);
 
-    if(isDeleted){
-      return ResponseEntity.ok("論理削除を解除しました");
-    }
-    else{
-      return ResponseEntity.ok("論理削除が完了しました");
-    }
+    return ResponseEntity.ok("論理削除が完了しました。");
+
   }
 
+
+  @Operation(summary = "受講生の復元", description = "削除済み受講生の復元を行います。")
+  @ApiError400
+  @ApiError409AlreadyActive
+  @ApiRestoreSuccess200
+  @ApiError404
+  @PatchMapping ("/student/{id}/restore")
+  public ResponseEntity<String> studentRestore(@PathVariable("id")
+      @Pattern(regexp = "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+      message = "idの形式が正しくありません。")String id){
+    Student student = service.searchStudentIncludeDeleted(id);
+    if(student == null){
+      throw new CustomException("該当するIDが存在しません。", HttpStatus.NOT_FOUND);
+    }
+    if(!student.isDeleted()){
+      throw new CustomException("既に登録済みの受講生なため、復元処理ができません。", HttpStatus.CONFLICT);
+    }
+    service.restoreStudent(id,false);
+    return ResponseEntity.ok("受講生の復元に成功しました。");
+  }
 
 }
 

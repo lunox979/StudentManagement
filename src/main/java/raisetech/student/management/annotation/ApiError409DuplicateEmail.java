@@ -32,6 +32,6 @@ import raisetech.student.management.exception.ValidationErrorResponse;
       )
 
 )
-  public @interface ApiError409 {}
+  public @interface ApiError409DuplicateEmail {}
 
 
