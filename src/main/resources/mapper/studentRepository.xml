@@ -3,6 +3,7 @@
 
 <mapper namespace="raisetech.student.management.repository.StudentRepository">
 
+  <!-- 受講生の単一検索 -->
   <select id="searchStudentIncludeDeleted" resultType="raisetech.student.management.data.Student">
     SELECT * FROM students WHERE id = #{id}
   </select>
@@ -11,14 +12,10 @@
     SELECT * FROM students WHERE is_deleted = false
   </select>
 
-  <!-- 受講生の単一検索 -->
-  <select id="searchStudent" resultType="raisetech.student.management.data.Student">
-    SELECT * FROM students WHERE id = #{id} and is_deleted = false
-  </select>
 
-  <select id="matchStudentCourses" resultType="raisetech.student.management.data.StudentCourse">
-    SELECT * FROM students_courses WHERE student_id = #{id}
-  </select>
+
+
+
 
   <select id="searchStudentCourseList" resultType="raisetech.student.management.data.StudentCourse">
     SELECT id, student_id, course_name, course_start_at,course_end_at  FROM students_courses

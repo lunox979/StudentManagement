@@ -91,14 +91,10 @@ public interface StudentRepository {
   /**
    * 受講生情報の論理削除を行います．
    * @param id 受講生ID
-   * @param isDeleted 削除フラグ
    */
 
-  void softDeleteStudent(@Param("id") String id,@Param("isDeleted") boolean isDeleted);
+  void softDeleteStudent(@Param("id") String id);
 
-  void restoreStudent(@Param("id") String id,@Param("isDeleted") boolean isDeleted);
-
-
-
+  void restoreStudent(@Param("id") String id);
 
 }

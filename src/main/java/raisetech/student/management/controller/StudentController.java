@@ -145,7 +145,7 @@ public class StudentController {
   @PutMapping("/updateStudent")
   public ResponseEntity<String> updateStudent(@RequestBody @Validated UpdateStudentRequest updateStudentRequest){
 
-    Student student = service.searchStudent(updateStudentRequest.getId());
+    Student student = service.searchStudentIncludeDeleted(updateStudentRequest.getId());
     if(student == null){
       throw new CustomException("該当するIDが存在しません。", HttpStatus.NOT_FOUND);
     }
@@ -194,7 +194,7 @@ public class StudentController {
     if(student.isDeleted()){
       throw new CustomException("既に削除済みの受講生ため、削除処理ができません。",HttpStatus.CONFLICT);
     }
-    service.softDeleteStudent(id,true);
+    service.softDeleteStudent(id);
 
     return ResponseEntity.ok("論理削除が完了しました。");
 
@@ -217,7 +217,7 @@ public class StudentController {
     if(!student.isDeleted()){
       throw new CustomException("既に登録済みの受講生なため、復元処理ができません。", HttpStatus.CONFLICT);
     }
-    service.restoreStudent(id,false);
+    service.restoreStudent(id);
     return ResponseEntity.ok("受講生の復元に成功しました。");
   }
 
