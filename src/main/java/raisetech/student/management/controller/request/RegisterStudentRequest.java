@@ -1,38 +1,27 @@
-package raisetech.student.management.data;
-
+package raisetech.student.management.controller.request;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-
-
-
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
+
+
 @Getter
-@Setter// get setを自動で生成してくれる
-
-@Schema(description = "受講生")
-public class Student {
-
-  @Schema(
-      description = "ID　UUIDを自動付与",
-      example = "5998fd5d-a2cd-11ef-b71f-6825f345144"
-      )
-  private String id;
-
+@Setter
+public class RegisterStudentRequest {
+  public interface Register{}
   @Schema(description = "氏名", example = "山田太郎")
   @NotBlank(message = "名前を入力してください")
   private String name;
 
   @Schema(description = "フリガナ、 カタカナと半角・全角スペースのみ許可",
-          example = "ヤマダタロウ")
+      example = "ヤマダタロウ")
   @Pattern(
       regexp = "^[ァ-ヶー\\s　]+$",
       message = "カタカナとスペースのみを入力してください"
@@ -61,17 +50,8 @@ public class Student {
 
   @Schema(description = "備考",example = "プログラミングを学習しています")
   private String remark;
-  @Schema(description = "削除フラグ",example = "false")
-  private boolean isDeleted;
 
-
-
-
-
+  @Schema(description = "受講生の登録するコース",example = "Javaコース")
+  @NotBlank(message = "登録するコースを選択してください")
+  private String courseName;
 }
-
-
-
-
-
-

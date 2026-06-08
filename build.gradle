@@ -32,11 +32,25 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //OpenAPI Generator
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.17'
+
+    //MapperStruct本体
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+
     // Apache Commons Lang(便利機能、ユーティリティ)
     implementation 'org.apache.commons:commons-lang3:3.18.0'
     //Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    //LombokとMapStructを仲介する連携ライブラリ
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+
+    //MapStructコードの自動生成エンジン
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
     //MySQLドライバ
     runtimeOnly 'com.mysql:mysql-connector-j'
 

@@ -2,6 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="raisetech.student.management.repository.StudentRepository">
+
+  <select id="searchStudentIncludeDeleted" resultType="raisetech.student.management.data.Student">
+    SELECT * FROM students WHERE id = #{id}
+  </select>
   <!-- 受講生の全件検索 -->
   <select id="search" resultType="raisetech.student.management.data.Student">
     SELECT * FROM students WHERE is_deleted = false
@@ -9,7 +13,7 @@
 
   <!-- 受講生の単一検索 -->
   <select id="searchStudent" resultType="raisetech.student.management.data.Student">
-    SELECT * FROM students WHERE id = #{id}
+    SELECT * FROM students WHERE id = #{id} and is_deleted = false
   </select>
 
   <select id="matchStudentCourses" resultType="raisetech.student.management.data.StudentCourse">
@@ -74,8 +78,7 @@
     living_area = #{livingArea},
     age = #{age},
     sex = #{sex},
-    remark = #{remark},
-    is_deleted = #{isDeleted}
+    remark = #{remark}
    WHERE id = #{id}
  </update>
 
@@ -88,12 +91,17 @@
   <update id="softDeleteStudent">
     UPDATE students SET
       is_deleted = #{isDeleted}
-    WHERE id = #{id}
+    WHERE id = #{id} and
+      is_deleted = false
+  </update>
+
+  <update id="restoreStudent">
+    UPDATE students SET
+      is_deleted = #{isDeleted}
+    WHERE id = #{id} and
+      is_deleted = true
   </update>
 
 
-  
-
-    
 
 </mapper>

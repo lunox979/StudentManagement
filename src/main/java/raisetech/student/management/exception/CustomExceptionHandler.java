@@ -22,20 +22,21 @@ import raisetech.student.management.exception.ValidationErrorResponse.Validation
 public class CustomExceptionHandler {
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<ValidationErrorResponse> handleCustomException(CustomException ex){
-    HttpStatus status = HttpStatus.NOT_FOUND;
-    List<ValidationFieldError> validationFieldError = List.of(new ValidationFieldError(ex.getMessage()));
-    ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(status.value(),validationFieldError,LocalDateTime.now());
+    HttpStatus status = ex.getStatus();
+    ValidationErrorResponse validationErrorResponse = getValidationErrorResponse(
+        ex.getMessage(), status);
     return ResponseEntity.status(status.value()).body(validationErrorResponse);
   }
 
   @ExceptionHandler(DuplicateKeyException.class)
   public ResponseEntity<ValidationErrorResponse> handleDuplicateKeyException(DuplicateKeyException ex){
     HttpStatus status = HttpStatus.CONFLICT;
-    List<ValidationFieldError> validationFieldError = List.of(new ValidationFieldError("message: 既にメールアドレスが存在しています"));
-
-    ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(status.value(),validationFieldError,LocalDateTime.now());
+    ValidationErrorResponse validationErrorResponse = getValidationErrorResponse(
+        "message: 既にメールアドレスが存在しています", status);
     return ResponseEntity.status(status.value()).body(validationErrorResponse);
   }
+
+
 
   @ExceptionHandler(ConstraintViolationException.class)
   public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException ex){
@@ -45,8 +46,8 @@ public class CustomExceptionHandler {
     for(ConstraintViolation<?> constraintViolation : ex.getConstraintViolations()){
       message.append(constraintViolation.getMessage());
     }
-    List<ValidationFieldError> validationErrors = List.of(new ValidationFieldError(message.toString()));
-    ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(status.value(),validationErrors,LocalDateTime.now());
+    ValidationErrorResponse validationErrorResponse = getValidationErrorResponse(
+        message.toString(), status);
     return ResponseEntity.status(status.value()).body(validationErrorResponse);
   }
 
@@ -61,7 +62,14 @@ public class CustomExceptionHandler {
         )).toList();
 
     ValidationErrorResponse validationErrorResponse = new ValidationErrorResponse(status.value(),fieldErrors,LocalDateTime.now());
-    return ResponseEntity.status(status).body(validationErrorResponse);
+    return ResponseEntity.status(status.value()).body(validationErrorResponse);
+  }
+
+  private static ValidationErrorResponse getValidationErrorResponse(String message,
+      HttpStatus status) {
+    List<ValidationFieldError> validationFieldError = List.of(new ValidationFieldError(message));
+
+    return new ValidationErrorResponse(status.value(), validationFieldError, LocalDateTime.now());
   }
 }
 

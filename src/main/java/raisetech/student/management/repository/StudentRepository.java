@@ -15,6 +15,11 @@ import raisetech.student.management.data.StudentCourse;
 @Mapper
 public interface StudentRepository {
 
+  /**
+   * 削除済み受講生も含めて単一検索を行います。
+   * @return Student
+   */
+   Student searchStudentIncludeDeleted(String id);
 
   /**
    *受講生の全件検索を行います．
@@ -91,6 +96,7 @@ public interface StudentRepository {
 
   void softDeleteStudent(@Param("id") String id,@Param("isDeleted") boolean isDeleted);
 
+  void restoreStudent(@Param("id") String id,@Param("isDeleted") boolean isDeleted);
 
 
 
