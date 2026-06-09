@@ -31,13 +31,15 @@ public interface StudentRepository {
   List<Student> search();
 
   /**
-   * 受講生の検索を行います．
+   * 削除されていない受講生の検索を行います．
    *
    * @param id 受講生ID
    * @return 受講生
    */
 
   Student searchStudent(String id);
+
+
 
   /**
    * 受講生IDに紐づく受講生コース情報を検索します．

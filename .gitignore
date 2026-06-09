@@ -28,7 +28,7 @@ build/
 *.log
 
 # OS固有のファイル
-.DS_Store
+**/.DS_Store
 
 # パッケージ化されたファイル
 *.jar
