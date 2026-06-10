@@ -57,11 +57,7 @@ public class StudentService {
     return repository.searchStudentIncludeDeleted(id);
   }
 
-  public Student searchStudent(String id){
 
-    return repository.searchStudent(id);
-
-  }
 
   /**
    * 受講生詳細検索です．
@@ -78,9 +74,7 @@ public class StudentService {
 
 
 
-  public List<StudentCourse> searchStudentmatchCourseList(String id){
-    return repository.matchStudentCourses(id);
-  }
+
 
 
   /**
@@ -105,13 +99,12 @@ public class StudentService {
    *
    * の論理削除を行います．
    * @param id 受講生ID
-   * @param isDeleted 受講生削除フラグ
    */
   @Transactional
-  public void softDeleteStudent(String id, boolean isDeleted){
+  public void softDeleteStudent(String id){
 
 
-    repository.softDeleteStudent(id,isDeleted);
+    repository.softDeleteStudent(id);
 
 
 
@@ -146,7 +139,7 @@ public class StudentService {
    * @param studentDetail 受講生詳細情報
    * @param uuid　受講生コース情報に紐づく受講生のID
    */
-  private  void initStudentsCourse(StudentDetail studentDetail, UUID uuid) {
+  void initStudentsCourse(StudentDetail studentDetail, UUID uuid) {
     if(studentDetail.getRegisterStudentCourse() == null){
       studentDetail.setRegisterStudentCourse(new StudentCourse());
     }
@@ -157,10 +150,9 @@ public class StudentService {
   /**
    * 削除された受講生情報の復元を行います。
    * @param id 受講生Id
-   * @param isDeleted 受講生削除フラグ
    */
-  public void restoreStudent(String id, boolean isDeleted){
-    repository.restoreStudent(id,isDeleted);
+  public void restoreStudent(String id){
+    repository.restoreStudent(id);
   }
 
 }
