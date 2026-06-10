@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 
+import org.apache.ibatis.jdbc.Null;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -184,6 +185,22 @@ class StudentServiceTest {
     assertThat(idCaptor.getValue()).isEqualTo(uuid.toString());
   }
 
+  @Test
+  void 受講生の論理削除_null値が渡された場合例外が発生すること(){
+    doThrow(NullPointerException.class).when(repository).softDeleteStudent(null);
+    assertThatThrownBy(()-> sut.softDeleteStudent(null))
+        .isInstanceOf(NullPointerException.class);
+  }
+
+  @Test
+  void 受講生の論理削除_repositoryが例外を投げた場合に伝播すること(){
+    UUID uuid = UUID.randomUUID();
+    doThrow(new RuntimeException("DBの接続に失敗")).when(repository).softDeleteStudent(uuid.toString());
+
+    assertThatThrownBy(()-> sut.softDeleteStudent(uuid.toString()))
+        .isInstanceOf(RuntimeException.class);
+  }
+
 
 
 
@@ -283,13 +300,21 @@ class StudentServiceTest {
 
   }
 
+  @Test
+  void 受講生の復元_null値が渡された場合例外が発生すること(){
+    doThrow(NullPointerException.class).when(repository).restoreStudent(null);
+    assertThatThrownBy(()-> sut.restoreStudent(null))
+        .isInstanceOf(NullPointerException.class);
+  }
 
+  @Test
+  void 受講生の復元_repositoryが例外を投げた場合に伝播すること(){
+    UUID uuid = UUID.randomUUID();
+    doThrow(new RuntimeException("DBの接続に失敗")).when(repository).restoreStudent(uuid.toString());
 
-
-
-
-
-
+    assertThatThrownBy(()-> sut.restoreStudent(uuid.toString()))
+        .isInstanceOf(RuntimeException.class);
+  }
 
 
 
